@@ -26,11 +26,11 @@ public class Launcher {
 //        Sample cos = new CosSample();
 //        cos.createSample(10, 0.2, true);
 //        LeastSquare ls = new LeastSquare(cos);
-//        double[] vect = {1,2,5};
+//        double[] vect = {3,2,5};
 //        double[][] matr = {
-//                {1,2,3},
-//                {2,3,4},
-//                {3,4,6}
+//                {1,2,4},
+//                {6,3,4},
+//                {7,4,2}
 //        };
 //        ls.gauss(matr, vect);
 //        for(int i = 0; i < matr.length; i++) {

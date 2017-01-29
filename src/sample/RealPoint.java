@@ -28,4 +28,13 @@ public class RealPoint {
         this.x = x;
         this.y = y;
     }
+
+    public boolean equals(RealPoint rp) {
+        if(this == rp)
+            return true;
+        if((Double.valueOf(x).equals(rp.getX()))&&(Double.valueOf(y).equals(rp.getY())))
+            return true;
+        else
+            return false;
+    }
 }

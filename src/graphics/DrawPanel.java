@@ -48,13 +48,13 @@ public class DrawPanel extends Panel {
         g.setColor(Color.RED);
         for(Point point:samplePoints)
             g.fillOval(point.x, point.y, 3,3);
-        setVisible(true);
+        //setVisible(true);
     }
 
-    @Override
-    public void repaint() {
-        paint(this.getGraphics());
-    }
+//    @Override
+//    public void repaint() {
+//        paint(this.getGraphics());
+//    }
 
     private int[] getXPoint(ArrayList<Point> func){
         int[] xPoint = new int[func.size()];
@@ -74,7 +74,7 @@ public class DrawPanel extends Panel {
     private ArrayList<Point> realToScreen(Function func) {
         ArrayList<Point> screenPoints = new ArrayList<>();
         for(RealPoint realPoint:func.getFunction())
-            screenPoints.add(makePoint(realPoint, func.getXInterval(), func.getYInterval()));
+            screenPoints.add(makePoint(realPoint, function.getXInterval(), function.getYInterval()));
         return screenPoints;
     }
 
@@ -89,7 +89,7 @@ public class DrawPanel extends Panel {
         int screenWidth = this.getWidth();
         int screenHeight = this.getHeight();
         double partX = 0.9*(realPoint.getX()/width*screenWidth +screenWidth*0.5) + screenWidth*0.05;
-        double partY = 0.9*(realPoint.getY()/height*screenHeight + screenHeight*0.5) + screenHeight*0.05;
+        double partY = (0.9*(realPoint.getY()/height*screenHeight + screenHeight*0.5) + screenHeight*0.05);
         int pointX = (int) partX;
         int pointY = (int) partY;
         return new Point(pointX, pointY);

@@ -18,19 +18,6 @@ public class LeastSquare {
     ArrayList<Double> coefficients;
     Sample sample;
     int power;
-
-    public Function getLeastSquareCreatedFunction() {
-        return leastSquareCreatedFunction;
-    }
-
-    public LeastSquare(Sample sample) {
-        power = 9;
-        this.sample = sample;
-//        coefficients = getCoefficients(power);
-        getCoefficients(power);
-        leastSquareCreatedFunction.createFunction();
-    }
-
     Function leastSquareCreatedFunction = new FunctionImpl() {
         @Override
         public double function(double x) {
@@ -40,6 +27,43 @@ public class LeastSquare {
             return result;
         }
     };
+
+    public Function getLeastSquareCreatedFunction() {
+        return leastSquareCreatedFunction;
+    }
+
+    public LeastSquare(Sample sample) {
+        this.sample = sample;
+        double summ = 0;
+        double mist = 0;
+        ArrayList<Double> minMistCoeffs = new ArrayList<>();
+        double minSumm = Double.MAX_VALUE;
+        for(int power = 3; power < 13; power++) {
+            this.power = power;
+            Sample copy = sample.getCopy();
+            summ = 0;
+            for(int i = 0; i < copy.getSample().size(); i++) {
+                RealPoint point = copy.getSample().get(i);
+                copy.removeElem(point);
+//                sample.getSample().remove(point);
+                coefficients = getCoefficients(copy, power);
+
+                mist = point.getY() - leastSquareCreatedFunction.function(point.getX());
+                summ+=mist*mist;
+                copy.getSample().add(i, point);
+            }
+            if(summ < minSumm) {
+                minSumm = summ;
+                minMistCoeffs = coefficients;
+                System.out.println(power);
+            }
+
+        }
+        coefficients = minMistCoeffs;
+        leastSquareCreatedFunction.createFunction();
+    }
+
+
 
     private double sumX(Sample sample, int power) {
         double sum = 0;
@@ -76,8 +100,6 @@ public class LeastSquare {
     }
 
     private void nullColumn(double[][] matrix, double[] vector, int i) {
-        //for(int j = i+1; j < matrix.length; j++) {
-
             for(int k = i+1; k < matrix.length; k++) {
                 double mult = getMult(matrix, i, k);
                 multRow(matrix, mult, k);
@@ -87,7 +109,6 @@ public class LeastSquare {
                 minusRows(matrix, i, k);
                 minusVect(vector, i, k);
             }
-        //}
     }
 
     private void minusVect(double[] vector, int i, int k) {
@@ -113,40 +134,14 @@ public class LeastSquare {
             matrix[j][k]-=matrix[i][k];
     }
 
-    private ArrayList<Double> getCoefficients(int polinomDegree) {
-//        double[][]A = createMatrix(sample, polinomDegree);
-//        double[]B = createVect(sample, polinomDegree);
-//            double[]w = new double[polinomDegree+1];
-//            //решение полинома
-//            double d = 0, s = 0;
-//
-//            for (int k = 0; k < polinomDegree+1; k++) {// прямой ход
-//                for (int j = k + 1; j < polinomDegree+1; j++) {
-//                    d = A[j][k] / A[k][k];
-//                    for (int i = k; i < polinomDegree +1; i++) {
-//                        A[j][i] = A[j][i] - d * A[k][i];
-//                    }
-//                    B[j] = B[j] - d * B[k];
-//                }
-//            }
-//            // обратный ход
-//            w[polinomDegree] = B[polinomDegree]/A[polinomDegree][polinomDegree];
-//            for (int k = polinomDegree-1; k >= 0; k--) {
-//                d = 0;
-//                for (int j = k + 1; j < polinomDegree+1; j++) {
-//                    s = A[k][j] * w[j];
-//                    d = d + s;
-//                }
-//                w[k] = (B[k] - d) / A[k][k];
-//            }
-        double[][] matrixA = createMatrix(sample,power);
-        double[] vectorB = createVect(sample, power);
+    private ArrayList<Double> getCoefficients(Sample sample, int polynomPower) {
+        double[][] matrixA = createMatrix(sample,polynomPower);
+        double[] vectorB = createVect(sample, polynomPower);
         gauss(matrixA, vectorB);
         double [] coeffs = createCoefVect(matrixA, vectorB);
         ArrayList<Double> coefficients = new ArrayList<>();
         for(Double coeff:coeffs)
             coefficients.add(coeff);
-        this.coefficients = coefficients;
         return coefficients;
     }
 
@@ -158,7 +153,7 @@ public class LeastSquare {
         for(int i = coeffs.length-2; i >=0; --i) {
             sum = 0;
             for(int k = i+1; k < matrix.length;k++) {
-                sum+=  coeffs[k]* matrix[i][k];
+                sum += coeffs[k]* matrix[i][k];
             }
             coeff = (vector[i] - sum)/matrix[i][i];
             coeffs[i] = coeff;
@@ -169,8 +164,8 @@ public class LeastSquare {
     private double errorFunc(Sample sample) {
         double error = 0;
         double summ = 0;
-        for(int i = 0; i < sample.getRightSample().size(); i++) {
-            error = sample.getRightSample().get(i).getY() - leastSquareCreatedFunction.function(sample.getSample().get(i).getX());
+        for(int i = 0; i < sample.getSample().size(); i++) {
+            error = sample.getSample().get(i).getY() - leastSquareCreatedFunction.function(sample.getSample().get(i).getX());
             summ += error * error;
         }
         return summ;

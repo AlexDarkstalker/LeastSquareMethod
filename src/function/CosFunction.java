@@ -6,7 +6,7 @@ package function;
 public class CosFunction extends FunctionImpl {
     @Override
     public double function(double x) {
-        return Math.cos(x);//Math.cos(2*Math.PI*x);
+        return Math.cos(2*Math.PI*x);
     }
 
 

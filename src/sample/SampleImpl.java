@@ -24,6 +24,12 @@ public abstract class SampleImpl implements Sample {
         return 0.33*dist*distortion;
     }
 
+    @Override
+    public void createSample(Sample sample) {
+        this.sample = sample.getSample();
+        this.rightSample = sample.getRightSample();
+    }
+
     private double getDistortion(double distortion) {
         return distortion - 2*distortion*random();
     }
@@ -45,6 +51,28 @@ public abstract class SampleImpl implements Sample {
     @Override
     public ArrayList<RealPoint> getSample() {
         return sample;
+    }
+
+    @Override
+    public void addElem(RealPoint point) {
+        this.sample.add(point);
+    }
+
+    @Override
+    public Sample getCopy() {
+        Sample copySample = new SampleImpl() {
+            @Override
+            protected double function(double x) {
+                return 0;
+            }
+        };
+        copySample.createSample(this);
+        return copySample;
+    }
+
+    @Override
+    public void removeElem(RealPoint realPoint) {
+        this.sample.remove(realPoint);
     }
 
     protected abstract double function(double x);
